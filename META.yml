@@ -1,0 +1,21 @@
+---
+name: Syntax-Highlight-Engine-Simple
+version: 0.0.1
+author:
+  - 'Sugama Keita <sugama@jamadam.com>'
+abstract: "Simple, fast and flexible Syntax\nHighlight Engine"
+license: perl
+requires:
+  Test::More: 0
+  UNIVERSAL::require: 0
+  version: 0
+generated_by: Module::Build version 0.2808
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
+provides:
+  Syntax::Highlight::Engine::Simple:
+    file: lib/Syntax/Highlight/Engine/Simple.pm
+    version: 0.0.1
+resources:
+  license: http://dev.perl.org/licenses/
