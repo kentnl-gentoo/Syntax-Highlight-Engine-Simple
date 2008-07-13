@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 11;
 use Syntax::Highlight::Engine::Simple;
 use encoding 'utf8';
 binmode(STDIN,	":utf8");
@@ -149,7 +149,7 @@ $highlighter->appendSyntax(
 	syntax => {
 		class => 'c',
 		regexp => 'test',
-		allowed_container => ['a', 'b'],
+		container => 'a',
 	}, 
 );
 
@@ -170,7 +170,7 @@ $highlighter->appendSyntax(
 	syntax => {
 		class => 'd',
 		regexp => 'tes',
-		allowed_container => ['a', 'b'],
+		container => 'a',
 	}, 
 );
 
@@ -181,3 +181,26 @@ ORIGINAL
 is( $result, $expected=<<'EXPECTED' );
 <span class='a'><span class='c'>test</span></span>
 EXPECTED
+
+### ----------------------------------------------------------------------------
+### 9. doFile with Sub Class also include multi byte Charactors
+### ----------------------------------------------------------------------------
+$result =
+	$highlighter->doFile(file => './t/testfile/2original.txt', tab_width => 4);
+is( $result, '漢字');
+
+### ----------------------------------------------------------------------------
+### 10. doFile with Sub Class also include multi byte Charactors
+### ----------------------------------------------------------------------------
+$result =
+	$highlighter->doFile(file => './t/testfile/3original.txt', tab_width => 4, encode => 'euc-jp');
+is( $result, '漢字');
+
+
+### ----------------------------------------------------------------------------
+### 10. doFile with Sub Class also include multi byte Charactors
+### ----------------------------------------------------------------------------
+$result =
+	$highlighter->doFile(file => './t/testfile/4original.txt', tab_width => 4, encode => 'sjis');
+is( $result, '漢字');
+

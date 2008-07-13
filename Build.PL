@@ -8,9 +8,10 @@ my $builder = Module::Build->new(
     dist_author         => 'Sugama Keita <sugama@jamadam.com>',
     dist_version_from   => 'lib/Syntax/Highlight/Engine/Simple.pm',
     requires => {
-        'Test::More' => 0,
-        'version'    => 0,
-        'UNIVERSAL::require' => 0,
+        'Test::More'			=> 0,
+        'version'				=> 0,
+        'UNIVERSAL::require'	=> 0,
+        'encoding'				=> 0,
     },
     add_to_cleanup      => [ 'Syntax-Highlight-Engine-Simple-*' ],
 );

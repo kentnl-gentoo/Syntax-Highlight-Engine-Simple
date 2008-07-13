@@ -12,5 +12,8 @@ t/perlcriticrc
 t/pod-coverage.t
 t/pod.t
 t/subclass.t
+t/testfile/2original.txt
+t/testfile/3original.txt
+t/testfile/4original.txt
 t/testfile/expected.txt
 t/testfile/original.txt

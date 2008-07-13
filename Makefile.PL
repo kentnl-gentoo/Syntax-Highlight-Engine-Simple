@@ -9,9 +9,10 @@ WriteMakefile(
     ABSTRACT_FROM       => 'lib/Syntax/Highlight/Engine/Simple.pm',
     PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More' => 0,
-        'version'    => 0,
-        'UNIVERSAL::require' => 0,
+        'Test::More'			=> 0,
+        'version'				=> 0,
+        'UNIVERSAL::require'	=> 0,
+        'encoding'				=> 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Syntax-Highlight-Engine-Simple-*' },

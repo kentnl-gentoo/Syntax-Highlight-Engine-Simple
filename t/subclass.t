@@ -85,7 +85,9 @@ $highlighter = Syntax::Highlight::Engine::Simple::Perl->new();
 $result =
 	$highlighter->doFile(file => './t/testfile/original.txt', tab_width => 4);
 
-open(my $filehandle, '<utf8:', './t/testfile/expected.txt');
+require 5.005;
+open(my $filehandle, '<'. './t/testfile/expected.txt');
+binmode($filehandle, ":encoding(utf8)");
 $expected = join('', <$filehandle>);
 is( $result, $expected );
 
@@ -139,7 +141,7 @@ sub setSyntax {
 			},
 			{
 				class => 'number',
-				regexp => '(?<!\w)\d+',
+				regexp => '\b\d+\b',
 			},	
 			{
 				class => 'keyword',
@@ -168,12 +170,12 @@ sub setSyntax {
 			{
 				class => 'keyword2',
 				regexp => '(?m)^=.+$',
-				allowed_container => ['perlpod'],
+				container => 'perlpod',
 			}, 
 			{
 				class => 'statement',
 				regexp => '(?m)^=\w+',
-				allowed_container => ['perlpod', 'keyword2'],
+				container => 'keyword2',
 			}, 
 		];
 }
@@ -430,18 +432,18 @@ sub setSyntax {
 			},
 			{
 				class => 'quote',
-				regexp => q@'.*?'@,
-				allowed_container => ['tag'],
+				regexp => q!(?s)'.*?'!,
+				container => 'tag',
 			},
 			{
 				class => 'wquote',
-				regexp => q@".*?"@,
-				allowed_container => ['tag'],
+				regexp => q!(?s)".*?"!,
+				container => 'tag',
 			},
 			{
 				class => 'number',
 				regexp => '\b\d+\b',
-				allowed_container => ['tag'],
+				container => 'tag',
 			},	
 			{
 				class => 'comment',

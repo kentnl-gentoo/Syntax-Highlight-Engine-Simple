@@ -4,7 +4,7 @@ use strict;
 use Carp;
 use UNIVERSAL::require;
 #use version;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 ### ----------------------------------------------------------------------------
 ### constractor
@@ -69,7 +69,7 @@ sub appendSyntax {
 		syntax => {
 			regexp		=> '',
 			class		=> '',
-			allowd_container => undef,
+			container	=> undef,
 		}, @_);
     
 	push(@{$self->{syntax}}, $args{syntax});
@@ -115,8 +115,10 @@ sub doFile {
 	
 	my $str = '';
 	
-	open(my $filehandle, '<'. $args{encode},$args{file})
-		or croak 'File open failed';
+	require 5.005;
+	
+	open(my $filehandle, '<'. $args{file}) or croak 'File open failed';
+	binmode($filehandle, ":encoding($args{encode})");
 	
 	while (my $line = <$filehandle>) {
 		
@@ -167,16 +169,18 @@ sub _doLine {
 	### Apply the map to string
 	foreach my $pos (@markup_array) {
 		
-		my $str_left = substr($str, $last_pos, $pos->[0] - $last_pos);
+		my @record = @$pos;
+		
+		my $str_left = substr($str, $last_pos, $record[0] - $last_pos);
 		
 		no strict 'refs';
 		$str_left = &{$self->{html_escape_code_ref}}($str_left);
 		
-		if (defined $pos->[1]) {
+		if (defined $record[1]) {
 			
 			$outstr .=
 				$str_left.
-				sprintf( "<span class='%s'>", $pos->[1]->{class});
+				sprintf( "<span class='%s'>", $record[1]->{class});
 		} 
 		
 		else {
@@ -184,7 +188,7 @@ sub _doLine {
 			$outstr .= $str_left. '</span>';
 		}
 		
-		$last_pos = $pos->[0];
+		$last_pos = $record[0];
 	}
 	
 	no strict 'refs';
@@ -238,9 +242,9 @@ sub _make_map {
 		
 		@$map_ref =
 			sort {
-				$a->[0] <=> $b->[0] or
-				$b->[1] <=> $a->[1] or
-				$a->[3] <=> $b->[3]
+				${$a}[0] <=> ${$b}[0] or
+				${$b}[1] <=> ${$a}[1] or
+				${$a}[3] <=> ${$b}[3]
 			} @$map_ref;
 	}
 
@@ -265,21 +269,20 @@ sub _restracture_map {
 	
 	REGLOOP: for (my $i = 0; $i < scalar @$map_ref; $i++) {
 		
+		my $allowed_container = $$map_ref[$i]->[2]->{container};
+		my $ok = 1;
+		
 		### Remove illigal overlap
 		if ($i > 1 and
 			$$map_ref[$i]->[0] < $$map_ref[$i - 1]->[1] and 
 			$$map_ref[$i]->[1] > $$map_ref[$i - 1]->[1]) {
 			
-			splice(@$map_ref, $i--, 1);
-			next REGLOOP;
+			$ok = 0;
 		}
-		
-		my $allowed_container = $$map_ref[$i]->[2]->{container};
-		my $ok = 1;
 		
 		### entry without allow-array never can be a daughter
 		### entry with allow-array must have mother at least
-		if (! $allowed_container and $_max_close_pos >= $$map_ref[$i]->[1] or
+		elsif (! $allowed_container and $_max_close_pos >= $$map_ref[$i]->[1] or
 			$allowed_container and $_max_close_pos < $$map_ref[$i]->[1]) {
 			
 			$ok = 0;
@@ -340,7 +343,7 @@ sub _restracture_map {
 ### ----------------------------------------------------------------------------
 sub _ret_map {
 	
-	return shift->{_markup_map};
+	#return shift->{_markup_map};
 }
 
 ### ----------------------------------------------------------------------------
@@ -379,7 +382,7 @@ sub array2regexp {
 ### ----------------------------------------------------------------------------
 sub getClassNames {
 	
-	return map {$_->{class}} @{shift->{syntax}}
+	return map {${$_}{class}} @{shift->{syntax}}
 }
 
 ### ----------------------------------------------------------------------------
@@ -625,6 +628,8 @@ sub classes and loaded in constractor if you give it the type argument.
 =over
 
 =item L<UNIVERSAL::require>
+
+=item L<encoding>
 
 =back
 
