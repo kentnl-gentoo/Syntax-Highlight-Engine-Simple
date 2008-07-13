@@ -4,7 +4,7 @@ use strict;
 use Carp;
 use UNIVERSAL::require;
 #use version;
-our $VERSION = '0.0.1';
+our $VERSION = '0.02';
 
 ### ----------------------------------------------------------------------------
 ### constractor
@@ -250,10 +250,10 @@ sub _make_map {
 ### ----------------------------------------------------------------------------
 ### restracture the map data into following format
 ### --------------------
-### | open_pos  | class |
-### | close_pos |       |
-### | open_pos  | class |
-### | close_pos |       |
+### | open_pos  | class 
+### | close_pos |       
+### | open_pos  | class 
+### | close_pos |       
 ### --------------------
 ### ----------------------------------------------------------------------------
 sub _restracture_map {
@@ -274,18 +274,18 @@ sub _restracture_map {
 			next REGLOOP;
 		}
 		
-		my $allow_array_ref = $$map_ref[$i]->[2]->{allowed_container};
+		my $allowed_container = $$map_ref[$i]->[2]->{container};
 		my $ok = 1;
 		
 		### entry without allow-array never can be a daughter
 		### entry with allow-array must have mother at least
-		if (! $allow_array_ref and $_max_close_pos >= $$map_ref[$i]->[1] or
-			$allow_array_ref and $_max_close_pos < $$map_ref[$i]->[1]) {
+		if (! $allowed_container and $_max_close_pos >= $$map_ref[$i]->[1] or
+			$allowed_container and $_max_close_pos < $$map_ref[$i]->[1]) {
 			
 			$ok = 0;
 		}
 		
-		elsif ($allow_array_ref) {
+		elsif ($allowed_container) {
 			
 			$ok = 0;
 			
@@ -296,17 +296,12 @@ sub _restracture_map {
 				if ($$map_ref[$j]->[1] >= $$map_ref[$i]->[1]) {
 					
 					### allowed container?
-					foreach my $value (@$allow_array_ref) {
+					if ($$map_ref[$j]->[2]->{class} eq $allowed_container) {
 						
 						### yes
-						if ($$map_ref[$j]->[2]->{class} eq $value) {
-							
-							$ok = 1;
-							last BACKWARD;
-						}
+						$ok = 1;
 					}
 					
-					### not allowed
 					last BACKWARD;
 				}
 			}
@@ -384,7 +379,7 @@ sub array2regexp {
 ### ----------------------------------------------------------------------------
 sub getClassNames {
 	
-	return map {$_->{class}} %{shift->{syntax}}
+	return map {$_->{class}} @{shift->{syntax}}
 }
 
 ### ----------------------------------------------------------------------------
@@ -406,8 +401,7 @@ __END__
 
 =head1 NAME
 
-Syntax::Highlight::Engine::Simple - Simple, fast and flexible Syntax
-Highlight Engine
+Syntax::Highlight::Engine::Simple - Simple Syntax Highlight Engine
 
 =head1 VERSION
 
@@ -445,8 +439,8 @@ Advantages are as follows.
 
 =item Simple
 
-Provides you a simple interface for syntax definition by depending on regular 
-expression.
+Provides you a simple interface for syntax definition by packing the
+complicated part of rules into regular expression.
 
 =item Fast
 
@@ -496,13 +490,13 @@ Set the rules for highlight. It calles for a argument I<syntax> in array.
 	    syntax => [
                 {
                     class => 'quote',
-                    regexp => q@'.*?(?<!¥¥¥¥)'@,
-                    allowed_container => ['tag'],
+                    regexp => "'.*?'",
+                    container => 'tag',
                 },
                 {
                     class => 'wquote',
-                    regexp => q@".*?(?<!¥¥¥¥)"@,
-                    allowed_container => ['tag'],
+                    regexp => '".*?"',
+                    container => 'tag',
                 },
 	    ]
 	);
@@ -510,7 +504,7 @@ Set the rules for highlight. It calles for a argument I<syntax> in array.
 =back
 
 The array can contain rules in hash which is consists of 3 keys, I<class>,
-I<regexp> and I<allowed_container>.
+I<regexp> and I<container>.
 
 =over
 
@@ -522,12 +516,12 @@ This appears to the output SPAN tag.
 
 Regular expression to be highlighted.
 
-=item allowed_container
+=item container
 
-An array of class name. This restricts the regexp to stand only in the classes.
-This param also works to ease the regulation some time. The highlighting rules
-doesn't stand in any container in default. allowed_container eliminate it to be
-a daughter of them.
+A class name of allowed container. This restricts the regexp to stand only in
+the classes. This parameter also works to ease the regulation some time. The
+highlighting rules doesn't stand in any container in default. This parameter
+eliminates it.
 
 =back
 
@@ -540,8 +534,8 @@ Append syntax by giving a hash.
 	$highlighter->setSyntax(
 	    syntax => {
 	        class => 'quote',
-	        regexp => q@'.*?(?<!¥¥¥¥)'@,
-	        allowed_container => ['tag'],
+	        regexp => "'.*?'",
+	        container => 'tag',
 	    }
 	);
 
@@ -628,7 +622,11 @@ sub classes and loaded in constractor if you give it the type argument.
 
 =head1 DEPENDENCIES
 
-UNIVERSAL::require
+=over
+
+=item L<UNIVERSAL::require>
+
+=back
 
 =head1 INCOMPATIBILITIES
 

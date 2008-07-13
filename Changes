@@ -1,5 +1,12 @@
 Revision history for Syntax-Highlight-Engine-Simple
 
+0.0.2  Sat Jul 13 15:33:25 2008
+	
+	-Fix getClassNames method
+	-Fix POD
+	-Change syntax format. allowed_container(array) abolished and
+		container(string) adopted.
+
 0.0.1  Mon Jul  7 14:13:17 2008
        Initial release.
 
