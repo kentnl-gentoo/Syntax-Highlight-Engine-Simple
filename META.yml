@@ -1,22 +1,14 @@
----
-name: Syntax-Highlight-Engine-Simple
-version: 0.03
-author:
-  - 'Sugama Keita <sugama@jamadam.com>'
-abstract: Simple Syntax Highlight Engine
-license: perl
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Syntax-Highlight-Engine-Simple
+version:      0.04
+version_from: lib/Syntax/Highlight/Engine/Simple.pm
+installdirs:  site
 requires:
-  Test::More: 0
-  UNIVERSAL::require: 0
-  encoding: 0
-  version: 0
-generated_by: Module::Build version 0.2808
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
-provides:
-  Syntax::Highlight::Engine::Simple:
-    file: lib/Syntax/Highlight/Engine/Simple.pm
-    version: 0.03
-resources:
-  license: http://dev.perl.org/licenses/
+    encoding:                      0
+    Test::More:                    0
+    UNIVERSAL::require:            0
+    version:                       0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.30_01

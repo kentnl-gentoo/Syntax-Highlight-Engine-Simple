@@ -4,7 +4,7 @@ use strict;
 use Carp;
 use UNIVERSAL::require;
 #use version;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 ### ----------------------------------------------------------------------------
 ### constractor
@@ -169,18 +169,16 @@ sub _doLine {
 	### Apply the map to string
 	foreach my $pos (@markup_array) {
 		
-		my @record = @$pos;
-		
-		my $str_left = substr($str, $last_pos, $record[0] - $last_pos);
+		my $str_left = substr($str, $last_pos, $$pos[0] - $last_pos);
 		
 		no strict 'refs';
 		$str_left = &{$self->{html_escape_code_ref}}($str_left);
 		
-		if (defined $record[1]) {
+		if (defined $$pos[1]) {
 			
 			$outstr .=
 				$str_left.
-				sprintf( "<span class='%s'>", $record[1]->{class});
+				sprintf( "<span class='%s'>", $$pos[1]->{class});
 		} 
 		
 		else {
@@ -188,7 +186,7 @@ sub _doLine {
 			$outstr .= $str_left. '</span>';
 		}
 		
-		$last_pos = $record[0];
+		$last_pos = $$pos[0];
 	}
 	
 	no strict 'refs';
@@ -242,9 +240,9 @@ sub _make_map {
 		
 		@$map_ref =
 			sort {
-				${$a}[0] <=> ${$b}[0] or
-				${$b}[1] <=> ${$a}[1] or
-				${$a}[3] <=> ${$b}[3]
+				$$a[0] <=> $$b[0] or
+				$$b[1] <=> $$a[1] or
+				$$a[3] <=> $$b[3]
 			} @$map_ref;
 	}
 
@@ -335,7 +333,7 @@ sub _restracture_map {
 		);
 	}
 	
-	return sort {$a->[0] <=> $b->[0]} @out_array;
+	return sort {$$a[0] <=> $$b[0]} @out_array;
 }
 
 ### ----------------------------------------------------------------------------
