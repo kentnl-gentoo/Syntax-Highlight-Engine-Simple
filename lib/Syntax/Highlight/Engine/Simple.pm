@@ -4,7 +4,7 @@ use strict;
 use Carp;
 use UNIVERSAL::require;
 #use version;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 ### ----------------------------------------------------------------------------
 ### constractor
@@ -264,45 +264,50 @@ sub _restracture_map {
 	my $map_ref = $self->{_markup_map};
 	my @out_array;
 	my $_max_close_pos = 0;
+	my @root = ();
 	
 	REGLOOP: for (my $i = 0; $i < scalar @$map_ref; $i++) {
 		
-		my $allowed_container = $$map_ref[$i]->[2]->{container};
+		my $allowed = $$map_ref[$i]->[2]->{container};
 		my $ok = 1;
-		
-		### Remove illigal overlap
-		if ($i > 1 and
-			$$map_ref[$i]->[0] < $$map_ref[$i - 1]->[1] and 
-			$$map_ref[$i]->[1] > $$map_ref[$i - 1]->[1]) {
-			
-			$ok = 0;
-		}
 		
 		### entry without allow-array never can be a daughter
 		### entry with allow-array must have mother at least
-		elsif (! $allowed_container and $_max_close_pos >= $$map_ref[$i]->[1] or
-			$allowed_container and $_max_close_pos < $$map_ref[$i]->[1]) {
+		if ((! $allowed and $_max_close_pos >= $$map_ref[$i]->[1])
+			or ($allowed and $_max_close_pos < $$map_ref[$i]->[1])) {
 			
 			$ok = 0;
 		}
 		
-		elsif ($allowed_container) {
-			
-			$ok = 0;
+		else {
 			
 			### Search for container
-			BACKWARD: for (my $j = $i - 1; $j >= 0; $j--) {
+			BACKWARD: for (my $j = scalar @root;  $j >= 0; $j--) {
 				
-				### found
-				if ($$map_ref[$j]->[1] >= $$map_ref[$i]->[1]) {
+				defined $root[$j] or next BACKWARD;
+				
+				if ($root[$j]->[1] >= $$map_ref[$i]->[0]) {
 					
-					### allowed container?
-					if ($$map_ref[$j]->[2]->{class} eq $allowed_container) {
+					if ($root[$j]->[1] >= $$map_ref[$i]->[1] and $allowed) {
 						
-						### yes
-						$ok = 1;
+						if (ref $allowed eq 'ARRAY') {
+							
+							foreach my $class (@$allowed) {
+								
+								if ($class eq $root[$j]->[2]->{class}) {
+									
+									last BACKWARD;
+								}
+							}
+						}
+						
+						elsif ($allowed eq $root[$j]->[2]->{class}) {
+							
+							last BACKWARD;
+						}
 					}
 					
+					$ok = 0;
 					last BACKWARD;
 				}
 			}
@@ -325,6 +330,17 @@ sub _restracture_map {
 			
 			next REGLOOP;
 		}
+		
+		### Set container candidate
+		for (my $j = 0;  $j < scalar @root; $j++) {
+			
+			if ($root[$j]->[1] <= $$map_ref[$i]->[0]) {
+				
+				splice(@root, $j--, 1);
+			}
+		}
+
+		push(@root, $$map_ref[$i]);
 		
 		push(
 			@out_array,
@@ -406,7 +422,7 @@ Syntax::Highlight::Engine::Simple - Simple Syntax Highlight Engine
 
 =head1 VERSION
 
-This document describes Syntax::Highlight::Engine::Simple version 0.0.1
+This document describes Syntax::Highlight::Engine::Simple version 0.05
 
 =head1 SYNOPSIS
 
@@ -490,6 +506,10 @@ Set the rules for highlight. It calles for a argument I<syntax> in array.
 	$highlighter->setSyntax(
 	    syntax => [
                 {
+                    class => 'tag',
+                    regexp => "<.+?>",
+                },
+                {
                     class => 'quote',
                     regexp => "'.*?'",
                     container => 'tag',
@@ -498,6 +518,11 @@ Set the rules for highlight. It calles for a argument I<syntax> in array.
                     class => 'wquote',
                     regexp => '".*?"',
                     container => 'tag',
+                },
+                {
+                    class => 'keyword',
+                    regexp => 'somekeyword',
+                    container => ['tag', 'quote', 'wquote'],
                 },
 	    ]
 	);
@@ -519,10 +544,10 @@ Regular expression to be highlighted.
 
 =item container
 
-A class name of allowed container. This restricts the regexp to stand only in
-the classes. This parameter also works to ease the regulation some time. The
-highlighting rules doesn't stand in any container in default. This parameter
-eliminates it.
+Class names of allowed container. It can be given in Strings or Array. This
+restricts the I<regexp> to stand only in the classes. This parameter also
+works to ease the regulation some time. The highlighting rules doesn't stand
+in any container in default. This parameter eliminates it.
 
 =back
 

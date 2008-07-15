@@ -7,6 +7,7 @@ META.yml
 README
 t/00.load.t
 t/highlight.t
+t/highlight2.t
 t/perlcritic.t
 t/perlcriticrc
 t/pod-coverage.t
