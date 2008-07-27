@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 3;
 use Syntax::Highlight::Engine::Simple;
 use encoding 'utf8';
 binmode(STDIN,	":utf8");
@@ -32,14 +32,14 @@ $highlighter->setSyntax(
 	]
 );
 
-is( $highlighter->doStr(str => <<'ORIGINAL'), $expected=<<'EXPECTED' ); #01
+is( $highlighter->doStr(str => <<'ORIGINAL'), $expected=<<'EXPECTED' );
 '"b" !c'c!
 ORIGINAL
 <span class='a'>'<span class='b'>"b"</span> !c'</span>c!
 EXPECTED
 
 ### ----------------------------------------------------------------------------
-### 1. Multi container definition
+### 2. Multi container definition
 ### ----------------------------------------------------------------------------
 $highlighter->setSyntax(
 	syntax => [
@@ -59,10 +59,32 @@ $highlighter->setSyntax(
 	]
 );
 
-is( $highlighter->doStr(str => <<'ORIGINAL'), $expected=<<'EXPECTED' ); #01
+is( $highlighter->doStr(str => <<'ORIGINAL'), $expected=<<'EXPECTED' );
 'aaa!c!aaa'
 "bbb!c!bbb"
 ORIGINAL
 <span class='a'>'aaa<span class='c'>!c!</span>aaa'</span>
 <span class='b'>"bbb<span class='c'>!c!</span>bbb"</span>
+EXPECTED
+
+### ----------------------------------------------------------------------------
+### 3. Make sure the close anticipates open at the same position
+### ----------------------------------------------------------------------------
+$highlighter->setSyntax(
+	syntax => [
+		{
+			class => 'a',
+			regexp => "a",
+		}, 
+		{
+			class => 'b',
+			regexp => '".+?"',
+		}, 
+	]
+);
+
+is( $highlighter->doStr(str => <<'ORIGINAL'), $expected=<<'EXPECTED' );
+a"b"
+ORIGINAL
+<span class='a'>a</span><span class='b'>"b"</span>
 EXPECTED
