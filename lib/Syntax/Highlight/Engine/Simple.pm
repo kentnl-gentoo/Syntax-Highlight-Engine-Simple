@@ -4,7 +4,7 @@ use strict;
 use Carp;
 use UNIVERSAL::require;
 #use version;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 ### ----------------------------------------------------------------------------
 ### constractor
@@ -354,11 +354,12 @@ sub _restracture_map {
             [$$map_ref[$i]->[1]]
         );
     }
-
+    
     return
         sort {
-            $$a[0] <=> $$b[0] or
-            ($$a[1] or 1) <=> ($$b[1] or 1)
+            $$a[0] <=> $$b[0]
+            #or
+            #(defined $$a[1]) <=> (defined $$b[1])
         } @out_array;
 }
 
