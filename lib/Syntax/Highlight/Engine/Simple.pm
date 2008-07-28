@@ -4,7 +4,7 @@ use strict;
 use Carp;
 use UNIVERSAL::require;
 #use version;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 ### ----------------------------------------------------------------------------
 ### constractor
@@ -298,12 +298,12 @@ sub _restracture_map {
                 splice(@root, $j--, 1);
             }
         }
-        
+
         my $syntax_ref = $self->{syntax}->[$$map_ref[$i]->[2]];
         my $ok = 0;
         
         ### no container restriction
-        if (! exists $syntax_ref->{container}) {
+        if (! exists $$syntax_ref{container}) {
             
             if (!scalar @root) {
                 
@@ -325,7 +325,7 @@ sub _restracture_map {
                         my $root_class =
                             $self->{syntax}->[$root[$j]->[2]]->{class};
                         
-                        if (exists $syntax_ref->{_cont_hash}->{$root_class}) {
+                        if (exists $$syntax_ref{_cont_hash}->{$root_class}) {
                             
                             $ok = 1; last BACKWARD; # allowed
                         }
@@ -424,7 +424,7 @@ Syntax::Highlight::Engine::Simple - Simple Syntax Highlight Engine
 
 =head1 VERSION
 
-This document describes Syntax::Highlight::Engine::Simple version 0.06
+This document describes Syntax::Highlight::Engine::Simple version 0.07
 
 =head1 SYNOPSIS
 

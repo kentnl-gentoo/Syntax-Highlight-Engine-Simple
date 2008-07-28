@@ -1,10 +1,14 @@
 Revision history for Syntax-Highlight-Engine-Simple
 
+0.06  2008/07/28
+    
+    - Fixed: Some Perl::Critic violations
+
 0.06  2008/07/27
     
-    - Improve: Optimized the architecture and the performance on some situation
-        has improved
-    - Improve: The document edited
+    - Improved: Optimized the architecture and the performance on some
+        situation has improved
+    - Improved: The document edited
 
 0.05  Sat Jul 16 00:53:00 2008
 	
