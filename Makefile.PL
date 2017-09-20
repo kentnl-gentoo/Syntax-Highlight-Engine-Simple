@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME                => 'Syntax::Highlight::Engine::Simple',
-    AUTHOR              => 'Sugama Keita <sugama@jamadam.com>',
+    AUTHOR              => ['Sugama Keita <sugama@jamadam.com>', 'Andreas K. Huettel <mail@akhuettel.de>'],
     VERSION_FROM        => 'lib/Syntax/Highlight/Engine/Simple.pm',
     ABSTRACT_FROM       => 'lib/Syntax/Highlight/Engine/Simple.pm',
     PL_FILES            => {},
