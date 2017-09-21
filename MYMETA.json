@@ -4,7 +4,7 @@
       "Sugama Keita <sugama@jamadam.com>",
       "Andreas K. Huettel <mail@akhuettel.de>"
    ],
-   "dynamic_config" : 1,
+   "dynamic_config" : 0,
    "generated_by" : "ExtUtils::MakeMaker version 7.1002, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"

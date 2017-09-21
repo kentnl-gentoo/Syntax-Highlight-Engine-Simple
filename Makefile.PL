@@ -13,6 +13,21 @@ WriteMakefile(
         'version'				=> 0,
         'encoding'				=> 0,
     },
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources => {
+            homepage => 'https://github.com/lab-measurement/Syntax-Highlight-Engine-Simple',
+            repository => {
+                type => 'git',
+                url => 'git://github.com/lab-measurement/Syntax-Highlight-Engine-Simple',
+                web => 'https://github.com/lab-measurement/Syntax-Highlight-Engine-Simple',
+            },
+            bugtracker => {
+                web => 'https://github.com/lab-measurement/Syntax-Highlight-Engine-Simple/issues',
+            },
+        },
+    },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Syntax-Highlight-Engine-Simple-*' },
+    LICENSE             => 'perl_5',
 );

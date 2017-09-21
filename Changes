@@ -1,5 +1,9 @@
 Revision history for Syntax-Highlight-Engine-Simple
 
+0.101 2017/09/21
+
+    - Metadata updates (license, homepage, repository)
+
 0.10  2017/09/20
 
     - Fixed: Tests on Perl 5.26 (encoding pragma no longer supported)
