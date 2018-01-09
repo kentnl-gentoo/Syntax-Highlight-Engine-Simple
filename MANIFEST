@@ -1,4 +1,5 @@
 Changes
+INSTALL.SKIP
 lib/Syntax/Highlight/Engine/Simple.pm
 Makefile.PL
 MANIFEST
